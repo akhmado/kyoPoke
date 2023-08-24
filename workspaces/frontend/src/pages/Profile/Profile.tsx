@@ -61,9 +61,10 @@ function Profile() {
     });
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     removeAuthToken();
     setUserData?.(null);
+    await utils.inventoryRouter.getMyInventory.reset();
   };
 
   return (
