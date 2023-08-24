@@ -9,6 +9,8 @@
   ],
   "scripts": {
     "dev": "concurrently \"yarn frontend\" \"yarn backend\"",
+    "start": "yarn workspace @kyohealth/app-backend serve",
+    "build": "yarn workspace @kyohealth/app-frontend build && yarn workspace @kyohealth/app-backend build",
     "frontend": "yarn workspace @kyohealth/app-frontend dev",
     "backend": "yarn workspace @kyohealth/app-backend dev"
   },

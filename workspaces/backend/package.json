@@ -5,7 +5,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "nodemon --exec ts-node --transpile-only src/index.ts"
+    "dev": "nodemon --exec ts-node --transpile-only src/index.ts",
+    "serve": "node ./dist/index.js",
+    "build": "tsc"
   },
   "dependencies": {
     "@prisma/client": "5.2.0",
