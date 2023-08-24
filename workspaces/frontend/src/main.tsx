@@ -17,8 +17,8 @@ function Main() {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: process.env.VITE_REACT_TRPC_URL
-            ? process.env.VITE_REACT_TRPC_URL
+          url: import.meta.env.VITE_REACT_TRPC_URL
+            ? import.meta.env.VITE_REACT_TRPC_URL
             : "http://localhost:8080/trpc",
           //@ts-expect-error error
           async headers() {
