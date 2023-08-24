@@ -17,7 +17,7 @@ function Main() {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:8080/trpc",
+          url: process.env.VITE_REACT_TRPC_URL || "http://localhost:8080/trpc",
           //@ts-expect-error error
           async headers() {
             const token = getAuthToken();
