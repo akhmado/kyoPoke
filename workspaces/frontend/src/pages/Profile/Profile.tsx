@@ -102,6 +102,7 @@ function Profile() {
             </Box>
             <Box>
               <Input
+                type="password"
                 isInvalid={!!errors.password}
                 {...register("password")}
                 placeholder="Password"
