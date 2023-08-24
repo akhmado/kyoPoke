@@ -9,7 +9,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { trpc } from "../../trpc";
+import { trpc } from "../../common/trpc";
 import PokemonInventoryCard from "../../components/PokemonInventoryCard";
 import { InventoryPokemonType } from "../../common/types";
 import { useContext, useState } from "react";

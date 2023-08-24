@@ -5,7 +5,7 @@ import { router } from "./router.tsx";
 import { ChakraProvider } from "@chakra-ui/react";
 import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { trpc } from "./trpc.ts";
+import { trpc } from "./common/trpc.ts";
 import { httpBatchLink } from "@trpc/client";
 import { getAuthToken } from "./common/utils.ts";
 import { UserContext } from "./common/useUserContext.ts";
@@ -17,7 +17,7 @@ function Main() {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:3000/trpc",
+          url: "http://localhost:8080/trpc",
           //@ts-expect-error error
           async headers() {
             const token = getAuthToken();

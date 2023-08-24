@@ -1,24 +1,12 @@
 import { useContext, useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Progress,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Card, CardBody, Progress, Text } from "@chakra-ui/react";
 import AppMap from "../../components/Map";
-import { trpc } from "../../trpc";
+import { trpc } from "../../common/trpc";
 import FoundPokemonModal from "../../components/FoundPokemonModal";
 import { IPokemon } from "@kyohealth/app-backend/src/common/types";
 import PokemonCard from "../../components/PokemonCard";
 import { UserContext } from "../../common/useUserContext";
-import { Link } from "react-router-dom";
-import { APP_ROUTES } from "../../common/routes";
+import PleaseLoginModal from "../../components/PleaseLoginModal";
 
 function HomePage() {
   const [userData] = useContext(UserContext);
@@ -33,11 +21,14 @@ function HomePage() {
     isLoading: isTryingToCatch,
     mutate,
   } = trpc.mapRouter.tryToCatchPokemon.useMutation();
-  const { data, isFetching, refetch } =
-    trpc.mapRouter.searchAreaForPokemons.useQuery(undefined, {
-      refetchOnWindowFocus: false,
-      enabled: false,
-    });
+  const {
+    data,
+    isFetching: isSearching,
+    refetch,
+  } = trpc.mapRouter.searchAreaForPokemons.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+    enabled: false,
+  });
 
   useEffect(() => {
     if (data?.length) setIsModalOpen(true);
@@ -70,39 +61,26 @@ function HomePage() {
     );
   };
 
-  const isSearching = isFetching;
-
   return (
     <Box>
       <Box sx={{ width: "100%", height: "100vh", position: "relative" }}>
         <AppMap onMapClick={handleMapClick} />
 
-        <Modal
-          isCentered
+        <Card
+          position="absolute"
+          bottom="20px"
+          left="50%"
+          transform="translateX(-50%)"
+        >
+          <CardBody>
+            <Text fontWeight="bold">Click on a map to start searching for Pokemon's in that area</Text>
+          </CardBody>
+        </Card>
+
+        <PleaseLoginModal
           isOpen={isLoginModalOpen}
           onClose={() => setIsLoginModalOpen(false)}
-        >
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>
-              <Text>Please log in or sign up</Text>
-            </ModalHeader>
-            <ModalBody>
-              <Text>
-                This action requires you to be authenticated please log in or
-                sign up to the platform
-              </Text>
-            </ModalBody>
-            <ModalFooter>
-              <Button mr="2" onClick={() => setIsLoginModalOpen(false)}>
-                Close
-              </Button>
-              <Link to={APP_ROUTES.PROFILE}>
-                <Button colorScheme="green">Log in / Sign up</Button>
-              </Link>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+        />
 
         <FoundPokemonModal
           isOpen={isModalOpen}

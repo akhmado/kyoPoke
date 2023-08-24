@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardBody, Input, Text } from "@chakra-ui/react";
 import { useContext, useState } from "react";
-import { trpc } from "../../trpc";
+import { trpc } from "../../common/trpc";
 import { removeAuthToken, setAuthToken } from "../../common/utils";
 import { UserContext } from "../../common/useUserContext";
 
