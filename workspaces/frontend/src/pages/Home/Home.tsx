@@ -11,6 +11,7 @@ import PleaseLoginModal from "../../components/PleaseLoginModal";
 function HomePage() {
   const [userData] = useContext(UserContext);
 
+  const [isUserClick, setIsUserClick] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTryingToCatchPokemon, setIsTryingToCatchPokemon] = useState(false);
@@ -31,10 +32,11 @@ function HomePage() {
   });
 
   useEffect(() => {
-    if (data?.length) setIsModalOpen(true);
+    if (data?.length && isUserClick) setIsModalOpen(true);
   }, [data]);
 
   const handleMapClick = () => {
+    setIsUserClick(true);
     refetch();
   };
 
@@ -68,11 +70,11 @@ function HomePage() {
 
         <Card
           position="absolute"
-          bottom="20px"
+          top="20px"
           left="50%"
           transform="translateX(-50%)"
         >
-          <CardBody>
+          <CardBody py="2" px="4">
             <Text fontWeight="bold">Click on a map to start searching for Pokemon's in that area</Text>
           </CardBody>
         </Card>
