@@ -1,13 +1,32 @@
 import { Box, Button, Card, CardBody, Input, Text } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { trpc } from "../../common/trpc";
 import { removeAuthToken, setAuthToken } from "../../common/utils";
 import { UserContext } from "../../common/useUserContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+
+const validationSchema = z.object({
+  email: z.string().email({ message: "Enter a valid email" }),
+  password: z
+    .string()
+    .min(6, { message: "Password should be no less than 6 characters" }),
+});
+
+const defaultValues = {
+  email: "",
+  password: "",
+};
 
 function Profile() {
-  const [form, setForm] = useState({
-    email: "test@test.com",
-    password: "123456",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(validationSchema),
+    defaultValues,
   });
 
   const utils = trpc.useContext();
@@ -15,19 +34,29 @@ function Profile() {
   const { mutate: logIn } = trpc.authRouter.logIn.useMutation();
   const { mutate: signUp } = trpc.authRouter.signUp.useMutation();
 
-  const handleLogIn = () => {
+  const handleLogIn = (form: typeof defaultValues) => {
     logIn(form, {
       onSuccess: async (data) => {
         setAuthToken(data.token!);
         await utils.authRouter.getUser.reset();
-      }
+      },
+      onError: () => {
+        alert("Error occurred");
+        removeAuthToken();
+        setUserData?.(null);
+      },
     });
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = (form: typeof defaultValues) => {
     signUp(form, {
       onSuccess: (data) => {
         alert(data.msg);
+      },
+      onError: () => {
+        alert("Error occurred");
+        removeAuthToken();
+        setUserData?.(null);
       },
     });
   };
@@ -45,8 +74,6 @@ function Profile() {
       alignItems="center"
       justifyContent="center"
     >
-      {/* {isFetching && <Progress width="100%" mt="4" size="xs" isIndeterminate />} */}
-
       {userData && (
         <Card p="2">
           <CardBody>
@@ -61,22 +88,32 @@ function Profile() {
       {!userData && (
         <Card width="30%" p="2">
           <CardBody>
-            <Text>Login or Signup</Text>
-            <Input
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              mt="2"
-              placeholder="Email"
-            />
-            <Input
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              mt="2"
-              placeholder="Password"
-            />
+            <Text>Login or Sign up</Text>
+            <Box>
+              <Input
+                isInvalid={!!errors.email}
+                {...register("email")}
+                placeholder="Email"
+                mt="2"
+              />
+              <Text color="red" fontSize="sm">
+                {errors.email?.message}
+              </Text>
+            </Box>
+            <Box>
+              <Input
+                isInvalid={!!errors.password}
+                {...register("password")}
+                placeholder="Password"
+                mt="2"
+              />
+              <Text color="red" fontSize="sm">
+                {errors.password?.message}
+              </Text>
+            </Box>
             <Box mt="2">
-              <Button onClick={handleLogIn}>Login</Button>
-              <Button ml="1" onClick={handleSignUp}>
+              <Button onClick={handleSubmit(handleLogIn)}>Login</Button>
+              <Button ml="1" onClick={handleSubmit(handleSignUp)}>
                 Sign Up
               </Button>
             </Box>
