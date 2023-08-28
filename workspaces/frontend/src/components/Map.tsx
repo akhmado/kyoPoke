@@ -42,12 +42,11 @@ function AppMap({ onMapClick }: Props) {
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     const lat = e.latLng?.lat();
     const lng = e.latLng?.lng();
-    const pt = new google.maps.LatLng(lat!, lng);
     setCords({
       lat: lat!,
       lng: lng!,
     });
-    map.setCenter(pt);
+
     onMapClick?.();
   };
 
@@ -64,6 +63,7 @@ function AppMap({ onMapClick }: Props) {
       {cords.lat && cords.lng && (
         <Marker
           key={Date.now()}
+          animation={google.maps.Animation.BOUNCE}
           position={{
             lat: +cords.lat,
             lng: +cords.lng,

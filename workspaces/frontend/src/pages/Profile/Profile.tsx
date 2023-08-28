@@ -87,7 +87,14 @@ function Profile() {
       )}
 
       {!userData && (
-        <Card width="30%" p="2">
+        <Card
+          sx={{
+            flex: 1,
+            maxWidth: {
+              md: "40%",
+            },
+          }}
+        >
           <CardBody>
             <Text>Login or Sign up</Text>
             <Box>

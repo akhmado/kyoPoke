@@ -10,11 +10,17 @@ import {
   useDisclosure,
   BoxProps,
   FlexProps,
+  Show,
+  Tabs,
+  TabList,
+  // TabPanels,
+  Tab,
+  // TabPanel,
 } from "@chakra-ui/react";
 import { FiHome, FiBox, FiSettings } from "react-icons/fi";
 import { IconType } from "react-icons";
-import { ReactText } from "react";
-import { Link } from "react-router-dom";
+import { FC, ReactText, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { APP_ROUTES } from "../common/routes";
 
 interface LinkItemProps {
@@ -29,8 +35,17 @@ const LinkItems: Array<LinkItemProps> = [
   { name: "Profile", icon: FiSettings, to: APP_ROUTES.PROFILE },
 ];
 
-export default function SimpleSidebar({ children }: any) {
+const SimpleSidebar: FC = ({ children }: any) => {
   const { isOpen, onClose } = useDisclosure();
+  const { pathname } = useLocation();
+
+  const [currentTab, setCurrentTab] = useState(0);
+
+  useEffect(() => {
+    const index = LinkItems.findIndex((item) => item.to === pathname);
+    setCurrentTab(index);
+  }, [pathname]);
+
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
       <SidebarContent
@@ -49,8 +64,36 @@ export default function SimpleSidebar({ children }: any) {
           <SidebarContent onClose={onClose} />
         </DrawerContent>
       </Drawer>
-      <Box ml={{ base: 0, md: 60 }}>
-        {children}
+      <Box ml={{ base: 0, md: 60 }}>{children}</Box>
+
+      <Box
+        w="100%"
+        backgroundColor="white"
+        position="fixed"
+        left="0"
+        bottom="0"
+      >
+        <Show breakpoint="(max-width: 567px)">
+          <Tabs index={currentTab} isFitted>
+            <TabList width="full">
+              {LinkItems.map((tab) => (
+                <Link key={tab.to} style={{ flex: 1 }} to={tab.to}>
+                  <Tab height="60px" style={{ width: "100%" }}>
+                    <Icon
+                      mr="4"
+                      fontSize="16"
+                      _groupHover={{
+                        color: "white",
+                      }}
+                      as={tab.icon}
+                    />
+                    {tab.name}
+                  </Tab>
+                </Link>
+              ))}
+            </TabList>
+          </Tabs>
+        </Show>
       </Box>
     </Box>
   );
@@ -129,3 +172,5 @@ const NavItem = ({ icon, children, to, ...rest }: NavItemProps) => {
     </Link>
   );
 };
+
+export default SimpleSidebar;
